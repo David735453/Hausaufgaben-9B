@@ -27,4 +27,3 @@ This appears to be a Next.js blog application with MDX content support. Key comp
    - Vercel integration flags
    - SEO management (`components/SEO.js`)
    - Social icons and favicon setup
-   - Cypress testing configuration
