@@ -46,10 +46,6 @@ export const getPostBySlug = async (slug) => {
 
   const { content, data } = matter(source);
 
-  console.log('--- RAW CONTENT AFTER MATTER PARSING ---');
-  console.log(content);
-  console.log('--- END RAW CONTENT ---');
-
   const mdxSource = await serialize(content, {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
