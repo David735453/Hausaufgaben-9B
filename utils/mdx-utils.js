@@ -24,7 +24,8 @@ export const sortPostsByDate = (posts) => {
 
 export const getPosts = () => {
   let posts = postFilePaths.map((filePath) => {
-    const source = fs.readFileSync(path.join(POSTS_PATH, filePath));
+    const source = fs.readFileSync(path.join(POSTS_PATH, filePath), 'utf8');
+    console.log('Processing file:', filePath); // <-- Add this line
     const { content, data } = matter(source);
 
     return {
@@ -44,6 +45,10 @@ export const getPostBySlug = async (slug) => {
   const source = fs.readFileSync(postFilePath);
 
   const { content, data } = matter(source);
+
+  console.log('--- RAW CONTENT AFTER MATTER PARSING ---');
+  console.log(content);
+  console.log('--- END RAW CONTENT ---');
 
   const mdxSource = await serialize(content, {
     // Optionally pass remark/rehype plugins

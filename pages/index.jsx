@@ -9,7 +9,7 @@ import SEO from '../components/SEO';
 import { FlagValues } from '@vercel/flags/react';
 import { decrypt, encrypt } from '@vercel/flags';
 import { safeJsonStringify } from '@vercel/flags';
-import Banner from '@vercel/flags';
+import { Banner } from '@vercel/flags';
 
 export default function Index({ posts, globalData }) {
   return (
@@ -29,8 +29,8 @@ export default function Index({ posts, globalData }) {
               <Link
                 as={`/posts/${post.filePath.replace(/\.mdx?$/, '')}`}
                 href={`/posts/[slug]`}
-                className="py-6 lg:py-10 px-6 lg:px-16 block focus:outline-none focus:ring-4">
-
+                className="py-6 lg:py-10 px-6 lg:px-16 block focus:outline-none focus:ring-4"
+              >
                 {post.data.date && (
                   <p className="uppercase mb-3 font-bold opacity-60">
                     {post.data.date}
@@ -43,7 +43,6 @@ export default function Index({ posts, globalData }) {
                   </p>
                 )}
                 <ArrowIcon className="mt-4" />
-
               </Link>
             </li>
           ))}
@@ -67,11 +66,11 @@ export function Page({ flags, encryptedFlagValues }) {
     <div>
       <FlagValues values={encryptedFlagValues} />
       {flags.showBanner ? <Banner /> : null}
-    {/* Some other content */}
-    <FlagValues values={{ exampleFlag: true }} />
-  </div>
+      {/* Some other content */}
+      <FlagValues values={{ exampleFlag: true }} />
+    </div>
   );
-};
+}
 
 /**
  * A function which respects overrides set by the Toolbar, and returns feature flags.
@@ -81,14 +80,14 @@ async function getFlags(request) {
   const overrides = overridesCookieValue
     ? await decrypt(overridesCookieValue)
     : null;
- 
+
   const flags = {
     banner: overrides?.banner ?? false,
   };
- 
+
   return flags;
 }
- 
+
 export const getServerSideProps = async (context) => {
   const posts = getPosts();
   const globalData = getGlobalData();
