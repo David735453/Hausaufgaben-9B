@@ -9,6 +9,7 @@ import SEO from '../components/SEO';
 import { FlagValues } from '@vercel/flags/react';
 import { decrypt, encrypt } from '@vercel/flags';
 import { safeJsonStringify } from '@vercel/flags';
+import { Banner } from '@vercel/flags';
 
 export default function Index({ posts, globalData }) {
   return (
