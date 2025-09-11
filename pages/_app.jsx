@@ -11,7 +11,7 @@ injectSpeedInsights();
 function MyApp({ Component, pageProps }) {
   return (
     <>
-      <span className="theme-bejamas" />
+      
       <Component {...pageProps} />
       <Analytics />
       <SpeedInsights />

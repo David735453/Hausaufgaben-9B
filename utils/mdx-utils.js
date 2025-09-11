@@ -25,11 +25,18 @@ export const sortPostsByDate = (posts) => {
 export const getPosts = () => {
   let posts = postFilePaths.map((filePath) => {
     const source = fs.readFileSync(path.join(POSTS_PATH, filePath), 'utf8');
-    console.log('Processing file:', filePath); // <-- Add this line
-    const { content, data } = matter(source);
+    
+    const { data } = matter(source);
+
+    if (data.date) {
+      const date = new Date(data.date);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      data.date = `${day}.${month}.${year}`;
+    }
 
     return {
-      content,
       data,
       filePath,
     };
