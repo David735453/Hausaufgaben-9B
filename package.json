@@ -35,7 +35,8 @@
     "prismjs": "^1.25.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "remark-gfm": "^3.0.1"
+    "remark-gfm": "^3.0.1",
+    "@octokit/rest": "^20.0.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.0",
