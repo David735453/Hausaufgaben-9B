@@ -1,36 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
-import Layout, { GradientBackground } from '../components/Layout';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { getGlobalData } from '../utils/global-data';
+import Layout, { GradientBackground } from '../../components/Layout';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import { getGlobalData } from '../../utils/global-data';
+import { getPostDataForEditBySlug } from '../../utils/mdx-utils';
 
-export default function AddPostPage({ globalData }) {
-  const [title, setTitle] = useState(
-    `Title, ${new Date().toLocaleDateString('de-DE')}`
-  );
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [description, setDescription] = useState('');
-  const [content, setContent] = useState(`## Informatik: nichts
-
-## Geschichte: nichts
-
-## Englisch: nichts
-
-## Deutsch: nichts
-
-## Französisch: nichts
-
-## Mathe: nichts
-
-## Physik: nichts
-
-## Chemie: nichts
-
-## Biologie: nichts
-
-## Katholisch: nichts
-
-## Musik: nichts`);
+export default function EditPostPage({ globalData, post }) {
+  const [title, setTitle] = useState(post.data.title || '');
+  const [date, setDate] = useState(post.data.date ? new Date(post.data.date).toISOString().slice(0, 10) : '');
+  const [description, setDescription] = useState(post.data.description || '');
+  const [content, setContent] = useState(post.content || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
 
@@ -39,8 +18,7 @@ export default function AddPostPage({ globalData }) {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = '0px'; // Reset height to recalculate
-      textareaRef.current.style.height =
-        textareaRef.current.scrollHeight + 'px';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
     }
   }, [content]);
 
@@ -50,20 +28,22 @@ export default function AddPostPage({ globalData }) {
     setSubmitStatus(null);
 
     try {
-      const response = await fetch('/api/add-post', {
+      const response = await fetch('/api/edit-post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, date, description, content }),
+        body: JSON.stringify({ 
+          slug: post.filePath.replace(/\.mdx?$/, ''),
+          title,
+          date,
+          description,
+          content
+        }),
       });
 
       if (response.ok) {
         setSubmitStatus('success');
-        setTitle('');
-        setDate('');
-        setDescription('');
-        setContent('');
       } else {
         const errorData = await response.json();
         setSubmitStatus(`Error: ${errorData.message}`);
@@ -80,14 +60,10 @@ export default function AddPostPage({ globalData }) {
       <Header name={globalData.name} />
       <main className="w-full flex justify-center">
         <div className="w-full max-w-2xl p-8 my-12 rounded-lg backdrop-blur-lg bg-white dark:bg-black dark:bg-opacity-30 bg-opacity-10 border border-gray-800 dark:border-white border-opacity-10 dark:border-opacity-10">
-          <h1 className="text-3xl lg:text-4xl text-center mb-8">
-            Add New Blog Post
-          </h1>
+          <h1 className="text-3xl lg:text-4xl text-center mb-8">Edit Blog Post</h1>
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
-              <label htmlFor="title" className="block text-lg font-medium mb-2">
-                Title
-              </label>
+              <label htmlFor="title" className="block text-lg font-medium mb-2">Title</label>
               <input
                 type="text"
                 id="title"
@@ -98,9 +74,7 @@ export default function AddPostPage({ globalData }) {
               />
             </div>
             <div className="mb-6">
-              <label htmlFor="date" className="block text-lg font-medium mb-2">
-                Date
-              </label>
+              <label htmlFor="date" className="block text-lg font-medium mb-2">Date</label>
               <input
                 type="date"
                 id="date"
@@ -111,12 +85,7 @@ export default function AddPostPage({ globalData }) {
               />
             </div>
             <div className="mb-6">
-              <label
-                htmlFor="description"
-                className="block text-lg font-medium mb-2"
-              >
-                Description
-              </label>
+              <label htmlFor="description" className="block text-lg font-medium mb-2">Description</label>
               <input
                 type="text"
                 id="description"
@@ -127,12 +96,7 @@ export default function AddPostPage({ globalData }) {
               />
             </div>
             <div className="mb-6">
-              <label
-                htmlFor="content"
-                className="block text-lg font-medium mb-2"
-              >
-                Content (MDX)
-              </label>
+              <label htmlFor="content" className="block text-lg font-medium mb-2">Content (MDX)</label>
               <textarea
                 id="content"
                 ref={textareaRef}
@@ -148,21 +112,13 @@ export default function AddPostPage({ globalData }) {
                 disabled={isSubmitting}
                 className="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-opacity-80 transition-opacity disabled:opacity-50"
               >
-                {isSubmitting ? 'Submitting...' : 'Add Post'}
+                {isSubmitting ? 'Submitting...' : 'Update Post'}
               </button>
             </div>
           </form>
           {submitStatus && (
-            <p
-              className={`mt-4 text-center ${
-                submitStatus.startsWith('Error')
-                  ? 'text-red-500'
-                  : 'text-green-500'
-              }`}
-            >
-              {submitStatus === 'success'
-                ? 'Post added successfully!'
-                : submitStatus}
+            <p className={`mt-4 text-center ${submitStatus.startsWith('Error') ? 'text-red-500' : 'text-green-500'}`}>
+              {submitStatus === 'success' ? 'Post updated successfully!' : submitStatus}
             </p>
           )}
         </div>
@@ -180,7 +136,16 @@ export default function AddPostPage({ globalData }) {
   );
 }
 
-export function getStaticProps() {
+export async function getServerSideProps({ params }) {
   const globalData = getGlobalData();
-  return { props: { globalData } };
+  const post = await getPostDataForEditBySlug(params.slug);
+
+  return {
+    props: {
+      globalData,
+      post,
+    },
+  };
 }
+
+

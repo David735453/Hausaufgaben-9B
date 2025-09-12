@@ -9,7 +9,6 @@ import SEO from '../components/SEO';
 import { FlagValues } from '@vercel/flags/react';
 import { decrypt, encrypt } from '@vercel/flags';
 import { safeJsonStringify } from '@vercel/flags';
-import { Banner } from '@vercel/flags';
 
 export default function Index({ posts, globalData }) {
   return (
@@ -58,17 +57,6 @@ export default function Index({ posts, globalData }) {
         className="absolute bottom-0 opacity-20 dark:opacity-10"
       />
     </Layout>
-  );
-}
-
-export function Page({ flags, encryptedFlagValues }) {
-  return (
-    <div>
-      <FlagValues values={encryptedFlagValues} />
-      {flags.showBanner ? <Banner /> : null}
-      {/* Some other content */}
-      <FlagValues values={{ exampleFlag: true }} />
-    </div>
   );
 }
 

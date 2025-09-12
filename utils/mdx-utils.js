@@ -25,7 +25,7 @@ export const sortPostsByDate = (posts) => {
 export const getPosts = () => {
   let posts = postFilePaths.map((filePath) => {
     const source = fs.readFileSync(path.join(POSTS_PATH, filePath), 'utf8');
-    
+
     const { data } = matter(source);
 
     if (data.date) {
@@ -99,4 +99,13 @@ export const getPreviousPostBySlug = (slug) => {
     title: post.data.title,
     slug: previousPostSlug,
   };
+};
+
+export const getPostDataForEditBySlug = async (slug) => {
+  const postFilePath = path.join(POSTS_PATH, `${slug}.mdx`);
+  const source = fs.readFileSync(postFilePath, 'utf8');
+
+  const { content, data } = matter(source);
+
+  return { content, data, filePath: `${slug}.mdx` };
 };
