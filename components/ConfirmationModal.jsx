@@ -7,12 +7,18 @@ const ConfirmationModal = ({ show, title, message, onConfirm, onCancel }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
-      <div className="relative p-5 border border-gray-200 dark:border-gray-700 w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+      <div className="relative p-5 border border-gray-200 dark:border-gray-700 w-96 shadow-lg rounded-md bg-white">
+        {' '}
+        {/* Changed background */}
+        <h3 className="text-lg leading-6 font-medium text-gray-900">
+          {' '}
+          {/* Removed dark:text-white */}
           {title}
         </h3>
         <div className="mt-2 px-7 py-3">
-          <p className="text-sm text-gray-500 dark:text-gray-300">
+          <p className="text-sm text-gray-500">
+            {' '}
+            {/* Removed dark:text-gray-300 */}
             {message}
           </p>
         </div>

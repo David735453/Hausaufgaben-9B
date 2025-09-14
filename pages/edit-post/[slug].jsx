@@ -4,10 +4,16 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { getGlobalData } from '../../utils/global-data';
 import { getPostDataForEditBySlug } from '../../utils/mdx-utils';
+import { useUser } from '../../context/UserContext';
+import { useRouter } from 'next/router';
 
 export default function EditPostPage({ globalData, post }) {
+  const { user, logout } = useUser();
+  const router = useRouter();
   const [title, setTitle] = useState(post.data.title || '');
-  const [date, setDate] = useState(post.data.date ? new Date(post.data.date).toISOString().slice(0, 10) : '');
+  const [date, setDate] = useState(
+    post.data.date ? new Date(post.data.date).toISOString().slice(0, 10) : ''
+  );
   const [description, setDescription] = useState(post.data.description || '');
   const [content, setContent] = useState(post.content || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,7 +24,8 @@ export default function EditPostPage({ globalData, post }) {
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = '0px'; // Reset height to recalculate
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + 'px';
     }
   }, [content]);
 
@@ -33,12 +40,12 @@ export default function EditPostPage({ globalData, post }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           slug: post.filePath.replace(/\.mdx?$/, ''),
           title,
           date,
           description,
-          content
+          content,
         }),
       });
 
@@ -55,15 +62,56 @@ export default function EditPostPage({ globalData, post }) {
     }
   };
 
+  if (!user || ![0, 2, 3].includes(user.permissionLevel)) {
+    return (
+      <Layout>
+        <Header name={globalData.name} />
+        <main className="w-full flex justify-center">
+          <div className="w-full max-w-2xl p-8 my-12 rounded-lg backdrop-blur-lg bg-white dark:bg-black dark:bg-opacity-30 bg-opacity-10 border border-gray-800 dark:border-white border-opacity-10 dark:border-opacity-10">
+            <h1 className="text-3xl lg:text-4xl text-center mb-8">
+              Access Denied
+            </h1>
+            <p className="text-center mb-4">
+              You do not have permission to view this page.
+            </p>
+            <div className="text-center">
+              <button
+                onClick={() =>
+                  (window.location.href = `/login?redirect=${router.asPath}`)
+                }
+                className="bg-primary hover:opacity-80 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Re-login with another account
+              </button>
+            </div>
+          </div>
+        </main>
+        <Footer copyrightText={globalData.footerText} />
+        <GradientBackground
+          variant="large"
+          className="fixed top-20 opacity-40 dark:opacity-60"
+        />
+        <GradientBackground
+          variant="small"
+          className="absolute bottom-0 opacity-20 dark:opacity-10"
+        />
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <Header name={globalData.name} />
       <main className="w-full flex justify-center">
         <div className="w-full max-w-2xl p-8 my-12 rounded-lg backdrop-blur-lg bg-white dark:bg-black dark:bg-opacity-30 bg-opacity-10 border border-gray-800 dark:border-white border-opacity-10 dark:border-opacity-10">
-          <h1 className="text-3xl lg:text-4xl text-center mb-8">Edit Blog Post</h1>
+          <h1 className="text-3xl lg:text-4xl text-center mb-8">
+            Edit Blog Post
+          </h1>
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
-              <label htmlFor="title" className="block text-lg font-medium mb-2">Title</label>
+              <label htmlFor="title" className="block text-lg font-medium mb-2">
+                Title
+              </label>
               <input
                 type="text"
                 id="title"
@@ -74,7 +122,9 @@ export default function EditPostPage({ globalData, post }) {
               />
             </div>
             <div className="mb-6">
-              <label htmlFor="date" className="block text-lg font-medium mb-2">Date</label>
+              <label htmlFor="date" className="block text-lg font-medium mb-2">
+                Date
+              </label>
               <input
                 type="date"
                 id="date"
@@ -85,7 +135,12 @@ export default function EditPostPage({ globalData, post }) {
               />
             </div>
             <div className="mb-6">
-              <label htmlFor="description" className="block text-lg font-medium mb-2">Description</label>
+              <label
+                htmlFor="description"
+                className="block text-lg font-medium mb-2"
+              >
+                Description
+              </label>
               <input
                 type="text"
                 id="description"
@@ -96,7 +151,12 @@ export default function EditPostPage({ globalData, post }) {
               />
             </div>
             <div className="mb-6">
-              <label htmlFor="content" className="block text-lg font-medium mb-2">Content (MDX)</label>
+              <label
+                htmlFor="content"
+                className="block text-lg font-medium mb-2"
+              >
+                Content (MDX)
+              </label>
               <textarea
                 id="content"
                 ref={textareaRef}
@@ -117,8 +177,16 @@ export default function EditPostPage({ globalData, post }) {
             </div>
           </form>
           {submitStatus && (
-            <p className={`mt-4 text-center ${submitStatus.startsWith('Error') ? 'text-red-500' : 'text-green-500'}`}>
-              {submitStatus === 'success' ? 'Post updated successfully!' : submitStatus}
+            <p
+              className={`mt-4 text-center ${
+                submitStatus.startsWith('Error')
+                  ? 'text-red-500'
+                  : 'text-green-500'
+              }`}
+            >
+              {submitStatus === 'success'
+                ? 'Post updated successfully!'
+                : submitStatus}
             </p>
           )}
         </div>
@@ -147,5 +215,3 @@ export async function getServerSideProps({ params }) {
     },
   };
 }
-
-

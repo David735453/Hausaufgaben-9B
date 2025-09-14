@@ -7,8 +7,12 @@ import Footer from '../components/Footer';
 import { getPosts } from '../utils/mdx-utils';
 import { getGlobalData } from '../utils/global-data';
 import ConfirmationModal from '../components/ConfirmationModal'; // Import the new component
+import { useUser } from '../context/UserContext';
+import { useRouter } from 'next/router'; // Import useRouter
 
 export default function DeleteIndexPage({ posts, globalData }) {
+  const { user, logout } = useUser();
+  const router = useRouter(); // Initialize useRouter
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(false);
@@ -59,6 +63,43 @@ export default function DeleteIndexPage({ posts, globalData }) {
     setPostToDelete(null); // Clear post info
   };
 
+  if (!user || ![0, 3].includes(user.permissionLevel)) {
+    return (
+      <Layout>
+        <Header name={globalData.name} />
+        <main className="w-full flex justify-center">
+          <div className="w-full max-w-2xl p-8 my-12 rounded-lg backdrop-blur-lg bg-white dark:bg-black dark:bg-opacity-30 bg-opacity-10 border border-gray-800 dark:border-white border-opacity-10 dark:border-opacity-10">
+            <h1 className="text-3xl lg:text-4xl text-center mb-8">
+              Access Denied
+            </h1>
+            <p className="text-center mb-4">
+              You do not have permission to view this page.
+            </p>
+            <div className="text-center">
+              <button
+                onClick={() =>
+                  (window.location.href = `/login?redirect=${router.asPath}`)
+                }
+                className="bg-primary hover:opacity-80 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Re-login with another account
+              </button>
+            </div>
+          </div>
+        </main>
+        <Footer copyrightText={globalData.footerText} />
+        <GradientBackground
+          variant="large"
+          className="fixed top-20 opacity-40 dark:opacity-60"
+        />
+        <GradientBackground
+          variant="small"
+          className="absolute bottom-0 opacity-20 dark:opacity-10"
+        />
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <SEO title={globalData.name} description="Delete Blog Posts" />
@@ -67,7 +108,9 @@ export default function DeleteIndexPage({ posts, globalData }) {
         <h1 className="text-3xl lg:text-5xl text-center mb-12">
           Delete Blog Posts
         </h1>
-        {message && <p className="mt-4 text-green-600 text-center">{message}</p>}
+        {message && (
+          <p className="mt-4 text-green-600 text-center">{message}</p>
+        )}
         {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
         <ul className="w-full">
           {posts.length ? (
@@ -86,7 +129,12 @@ export default function DeleteIndexPage({ posts, globalData }) {
                     )}
                   </div>
                   <button
-                    onClick={() => handleDeleteClick(post.filePath.replace(/\.mdx?$/, ''), post.data.title)}
+                    onClick={() =>
+                      handleDeleteClick(
+                        post.filePath.replace(/\.mdx?$/, ''),
+                        post.data.title
+                      )
+                    }
                     disabled={deleting}
                     className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                   >
@@ -133,4 +181,3 @@ export async function getStaticProps() {
     },
   };
 }
-

@@ -3,8 +3,12 @@ import Layout, { GradientBackground } from '../components/Layout';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { getGlobalData } from '../utils/global-data';
+import { useUser } from '../context/UserContext';
+import { useRouter } from 'next/router';
 
 export default function AddPostPage({ globalData }) {
+  const { user, logout } = useUser();
+  const router = useRouter();
   const [title, setTitle] = useState(
     `Title, ${new Date().toLocaleDateString('de-DE')}`
   );
@@ -74,6 +78,43 @@ export default function AddPostPage({ globalData }) {
       setIsSubmitting(false);
     }
   };
+
+  if (!user || ![0, 1, 2, 3].includes(user.permissionLevel)) {
+    return (
+      <Layout>
+        <Header name={globalData.name} />
+        <main className="w-full flex justify-center">
+          <div className="w-full max-w-2xl p-8 my-12 rounded-lg backdrop-blur-lg bg-white dark:bg-black dark:bg-opacity-30 bg-opacity-10 border border-gray-800 dark:border-white border-opacity-10 dark:border-opacity-10">
+            <h1 className="text-3xl lg:text-4xl text-center mb-8">
+              Access Denied
+            </h1>
+            <p className="text-center mb-4">
+              You do not have permission to view this page.
+            </p>
+            <div className="text-center">
+              <button
+                onClick={() =>
+                  (window.location.href = `/login?redirect=${router.asPath}`)
+                }
+                className="bg-primary hover:opacity-80 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Re-login with another account
+              </button>
+            </div>
+          </div>
+        </main>
+        <Footer copyrightText={globalData.footerText} />
+        <GradientBackground
+          variant="large"
+          className="fixed top-20 opacity-40 dark:opacity-60"
+        />
+        <GradientBackground
+          variant="small"
+          className="absolute bottom-0 opacity-20 dark:opacity-10"
+        />
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
