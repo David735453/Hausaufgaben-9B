@@ -81,7 +81,7 @@ export default function EditPostPage({ globalData, post }) {
                 }
                 className="bg-primary hover:opacity-80 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               >
-                Re-login with another account
+                login with another account
               </button>
             </div>
           </div>

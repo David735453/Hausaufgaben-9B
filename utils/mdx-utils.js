@@ -30,10 +30,12 @@ export const getPosts = () => {
 
     if (data.date) {
       const date = new Date(data.date);
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      data.date = `${day}.${month}.${year}`;
+      if (!isNaN(date)) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        data.date = `${day}.${month}.${year}`;
+      }
     }
 
     return {

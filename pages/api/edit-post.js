@@ -18,7 +18,9 @@ export default async function handler(req, res) {
   const branch = process.env.GITHUB_BRANCH || 'main'; // Default to 'main' branch
 
   if (!githubToken || !owner || !repo) {
-    return res.status(500).json({ message: 'GitHub credentials not configured' });
+    return res
+      .status(500)
+      .json({ message: 'GitHub credentials not configured' });
   }
 
   const octokit = new Octokit({
@@ -30,7 +32,7 @@ export default async function handler(req, res) {
   // Construct the new MDX content with frontmatter
   const newMdxContent = matter.stringify(content, {
     title,
-    date,
+    date: new Date(date),
     description,
   });
 

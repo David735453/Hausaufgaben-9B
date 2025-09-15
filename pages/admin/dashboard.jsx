@@ -21,7 +21,8 @@ export default function AdminDashboard() {
       const data = await res.json();
       setUsers(data);
     };
-    if (user && user.permissionLevel === 0) { // Only fetch users if admin
+    if (user && user.permissionLevel === 0) {
+      // Only fetch users if admin
       fetchUsers();
     }
   }, [user]);
@@ -31,10 +32,10 @@ export default function AdminDashboard() {
     const res = await fetch('/api/create-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        username: newUser, 
-        password: newPassword, 
-        permissionLevel: newPermissionLevel 
+      body: JSON.stringify({
+        username: newUser,
+        password: newPassword,
+        permissionLevel: newPermissionLevel,
       }),
     });
     const data = await res.json();
@@ -48,7 +49,7 @@ export default function AdminDashboard() {
   const handlePermissionChange = async (username, permissionLevel) => {
     // Prevent changing David's permission level
     if (username === 'David 735453') {
-      alert("Cannot change permission level for David 735453.");
+      alert('Cannot change permission level for David 735453.');
       return;
     }
 
@@ -58,8 +59,10 @@ export default function AdminDashboard() {
       body: JSON.stringify({ username, permissionLevel }),
     });
     if (res.ok) {
-      const updatedUsers = users.map((u) => // Renamed 'user' to 'u' to avoid conflict with context 'user'
-        u.username === username ? { ...u, permissionLevel } : u
+      const updatedUsers = users.map(
+        (
+          u // Renamed 'user' to 'u' to avoid conflict with context 'user'
+        ) => (u.username === username ? { ...u, permissionLevel } : u)
       );
       setUsers(updatedUsers);
     }
@@ -76,7 +79,7 @@ export default function AdminDashboard() {
             onClick={() => (window.location.href = '/admin')}
             className="bg-primary hover:opacity-80 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
-            Re-login with another account
+            login with another account
           </button>
         </div>
         <GradientBackground
@@ -150,7 +153,9 @@ export default function AdminDashboard() {
                   className="w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary"
                   id="newPermissionLevel"
                   value={newPermissionLevel}
-                  onChange={(e) => setNewPermissionLevel(parseInt(e.target.value))}
+                  onChange={(e) =>
+                    setNewPermissionLevel(parseInt(e.target.value))
+                  }
                 >
                   <option value={0}>0: Admin</option>
                   <option value={1}>1: Can create new post</option>
@@ -174,7 +179,9 @@ export default function AdminDashboard() {
                   key={u.username}
                   className="flex justify-between items-start bg-white dark:bg-gray-800 shadow-md rounded px-4 py-2 mb-2"
                 >
-                  <span className="text-gray-900 dark:text-gray-100 flex-grow mr-2">{u.username} (Level: {u.permissionLevel})</span>
+                  <span className="text-gray-900 dark:text-gray-100 flex-grow mr-2">
+                    {u.username} (Level: {u.permissionLevel})
+                  </span>
                   <div className="flex items-center flex-shrink-0 flex-col sm:flex-row">
                     <PermissionDropdown
                       currentPermissionLevel={u.permissionLevel}
@@ -189,7 +196,7 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
-      
+
       <GradientBackground
         variant="large"
         className="fixed top-20 opacity-40 dark:opacity-60"
