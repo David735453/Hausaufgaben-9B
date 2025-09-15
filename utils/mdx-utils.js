@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { serialize } from 'next-mdx-remote/serialize';
-import rehypePrism from '@mapbox/rehype-prism';
+import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
 
 // POSTS_PATH is useful when you want to get the path to a specific file
@@ -59,7 +59,7 @@ export const getPostBySlug = async (slug) => {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
       remarkPlugins: [remarkGfm],
-      rehypePlugins: [rehypePrism],
+      rehypePlugins: [[rehypePrettyCode, { theme: 'dracula' }]],
     },
     scope: data,
   });

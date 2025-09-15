@@ -1,12 +1,8 @@
-import { decrypt } from '@vercel/flags';
+import { createClient } from 'flags/next';
  
-async function getFlags(request) {
-  const overrideCookie = request.cookies['vercel-flag-overrides'];
-  const overrides = await decrypt(overrideCookie);
- 
-  const flags = {
-    exampleFlag: overrides?.exampleFlag ?? false,
-  };
+export default async function getFlags(request) {
+  const client = createClient(request);
+  const flags = await client.getFlags();
  
   return flags;
 }
