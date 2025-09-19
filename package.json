@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "@mapbox/rehype-prism": "^0.9.0",
+    "@mdx-js/react": "^3.1.1",
+    "@octokit/rest": "^20.0.2",
     "@tailwindcss/typography": "^0.5.0",
     "@vercel/analytics": "^1.5.0",
     "@vercel/flags": "^2.6.1",
@@ -29,21 +31,22 @@
     "classnames": "^2.3.1",
     "cypress": "^13.14.2",
     "gray-matter": "^4.0.3",
-    "next": "^14.2.11",
-    "next-mdx-remote": "^4.1.0",
+    "next": "15.5.3",
+    "next-mdx-remote": "^5.0.0",
     "next-remote-watch": "^1.0.0",
     "prismjs": "^1.25.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "remark-gfm": "^3.0.1",
-    "@octokit/rest": "^20.0.2"
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "remark-gfm": "^3.0.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
     "autoprefixer": "^10.4.0",
     "eslint": "<9.0.0",
-    "eslint-config-next": "^14.2.10",
+    "eslint-config-next": "15.5.3",
     "eslint-config-prettier": "^8.3.0",
     "postcss": "^8.4.4",
+    "postcss-nesting": "^13.0.2",
     "tailwindcss": "^3.0.0",
     "typescript": "^5.6.2"
   },

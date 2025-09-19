@@ -28,16 +28,6 @@ export const getPosts = () => {
 
     const { data } = matter(source);
 
-    if (data.date) {
-      const date = new Date(data.date);
-      if (!isNaN(date)) {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        data.date = `${day}.${month}.${year}`;
-      }
-    }
-
     return {
       data,
       filePath,
@@ -45,6 +35,18 @@ export const getPosts = () => {
   });
 
   posts = sortPostsByDate(posts);
+
+  posts.forEach((post) => {
+    if (post.data.date) {
+      const date = new Date(post.data.date);
+      if (!isNaN(date)) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        post.data.date = `${day}.${month}.${year}`;
+      }
+    }
+  });
 
   return posts;
 };
