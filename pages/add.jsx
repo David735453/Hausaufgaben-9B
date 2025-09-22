@@ -37,6 +37,12 @@ export default function AddPostPage({ globalData }) {
 
 ## Biologie: nichts
 
+## Geographie: nichts
+
+## Wirtschaft: nichts
+
+## PuG: nichts
+
 ## Katholisch: nichts
 
 ## Musik: nichts`);
